@@ -1,0 +1,25 @@
+project:
+  name: infrapilot-ai
+  tags:
+    - zerops-challenge
+    - ai
+    - devtools
+
+services:
+  - hostname: frontend
+    type: static
+    enableSubdomainAccess: true
+    buildFromGit: YOUR_GITHUB_REPOSITORY_URL
+
+  - hostname: api
+    type: python@3.12
+    enableSubdomainAccess: true
+    buildFromGit: YOUR_GITHUB_REPOSITORY_URL
+
+  - hostname: worker
+    type: python@3.12
+    buildFromGit: YOUR_GITHUB_REPOSITORY_URL
+
+  - hostname: db
+    type: postgresql:single@18
+    profile: oltp-staging

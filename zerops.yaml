@@ -1,0 +1,57 @@
+zerops:
+  - setup: frontend
+    build:
+      base: nodejs@22
+      buildCommands:
+        - cd frontend && npm ci && npm run build
+      deployFiles:
+        - frontend/dist/~
+      # IMPORTANT:
+      # Set VITE_API_BASE_URL in the frontend build environment to the PUBLIC API URL
+      # before deploying, e.g. https://api-....zerops.app
+      envVariables:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+    run:
+      base: static
+      ports:
+        - port: 80
+          httpSupport: true
+
+  - setup: api
+    build:
+      base: python@3.12
+      buildCommands:
+        - pip install --target backend/vendor -r backend/requirements.txt
+      deployFiles:
+        - backend/~
+    run:
+      base: python@3.12
+      ports:
+        - port: 8000
+          httpSupport: true
+      envVariables:
+        PYTHONPATH: /var/www/vendor:/var/www
+        CORS_ORIGINS: ${CORS_ORIGINS}
+        DATABASE_URL: ${db_connectionString}
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+        OPENAI_API_KEY: ${OPENAI_API_KEY}
+        OPENAI_MODEL: ${OPENAI_MODEL}
+      start: cd backend && uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+  - setup: worker
+    build:
+      base: python@3.12
+      buildCommands:
+        - pip install --target backend/vendor -r backend/requirements.txt
+      deployFiles:
+        - backend/~
+    run:
+      base: python@3.12
+      envVariables:
+        PYTHONPATH: /var/www/vendor:/var/www
+        DATABASE_URL: ${db_connectionString}
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+        OPENAI_API_KEY: ${OPENAI_API_KEY}
+        OPENAI_MODEL: ${OPENAI_MODEL}
+        WORKER_POLL_SECONDS: "2"
+      start: cd backend && python worker.py
