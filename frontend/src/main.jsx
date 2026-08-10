@@ -5,6 +5,7 @@ import "./styles.css";
 const API = (
   import.meta.env.VITE_API_BASE_URL ||
   "https://api-23d-8000.ny1.zerops.app"
+
 ).replace(/\/$/, "");
 
 async function request(path, options = {}) {
