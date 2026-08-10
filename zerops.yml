@@ -1,12 +1,13 @@
-- setup: frontend
-  build:
-    base: nodejs@22
-    buildCommands:
-      - cd frontend && npm ci && npm run build
-    deployFiles:
-      - frontend/dist/~
-  run:
-    base: static
+zerops:
+  - setup: frontend
+    build:
+      base: nodejs@22
+      buildCommands:
+        - cd frontend && npm ci && npm run build
+      deployFiles:
+        - frontend/dist/~
+    run:
+      base: static
 
   - setup: api
     build:
