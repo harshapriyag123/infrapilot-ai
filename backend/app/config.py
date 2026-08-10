@@ -25,11 +25,13 @@ class Settings(BaseSettings):
     @property
     def database_url_or_default(self) -> str:
         return self.database_url or "sqlite:///./infrapilot.db"
-
-    @property
-    def cors_origin_list(self) -> list[str]:
-        origins = self.cors_origins or "http://localhost:5173"
-        return [x.strip() for x in origins.split(",") if x.strip()]
+@property
+def cors_origin_list(self) -> list[str]:
+    origins = (
+        self.cors_origins
+        or "https://frontend-23d.ny1.zerops.app,http://localhost:5173"
+    )
+    return [x.strip() for x in origins.split(",") if x.strip()]
 
     @property
     def worker_poll_seconds_value(self) -> float:

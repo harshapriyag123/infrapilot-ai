@@ -2,7 +2,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 
-const API = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
+@property
+def cors_origin_list(self) -> list[str]:
+origins = (
+  self.cors_origins
+        or "https://frontend-23d.ny1.zerops.app,http://localhost:5173"
+    )
+return [x.strip() for x in origins.split(",") if x.strip()]
 
 async function request(path, options = {}) {
   const res = await fetch(`${API}${path}`, {
