@@ -48,20 +48,35 @@ class GitHubClient:
 
     def __init__(self):
         settings = get_settings()
+        token = settings.github_token_value
         self.headers = {
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
             "User-Agent": "InfraPilot-AI/1.0",
         }
-        if settings.github_token:
-            self.headers["Authorization"] = f"Bearer {settings.github_token}"
+        if token:
+            self.headers["Authorization"] = f"token {token}"
 
     def _get_json(self, client: httpx.Client, path: str):
         response = client.get(f"{self.API}{path}")
         if response.status_code == 404:
             raise ValueError("Repository not found or not accessible.")
+        if response.status_code == 401:
+            raise ValueError(
+                "GitHub unauthorized. Please set a valid GITHUB_TOKEN/GITHUB_PAT/GH_TOKEN and retry."
+            )
         if response.status_code == 403:
-            raise ValueError("GitHub API rate limit reached. Set GITHUB_TOKEN and retry.")
+            text = response.text.lower()
+            is_rate_limit = (
+                response.headers.get("X-RateLimit-Remaining") == "0"
+                or "rate limit" in text
+                or "x-ratelimit-remaining" in response.headers
+            )
+            if is_rate_limit:
+                raise ValueError("GitHub API rate limit reached. Set GITHUB_TOKEN and retry.")
+            raise ValueError(
+                "GitHub access forbidden. Verify your GitHub token has the required permissions and is not expired."
+            )
         response.raise_for_status()
         return response.json()
 

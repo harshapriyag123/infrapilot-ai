@@ -52,7 +52,11 @@ Symptoms: job fails with rate limit message or `403`.
 Steps:
 - Set `GITHUB_TOKEN` in `.env` or environment and restart backend. For example:
 ```
-set GITHUB_TOKEN=ghp_xxx
+# PowerShell
+$env:GITHUB_TOKEN="your_github_pat_here"
+
+# CMD
+set GITHUB_TOKEN=your_github_pat_here
 ```
 - For local debugging you can also shorten analysis scope by editing the worker to limit files fetched.
 

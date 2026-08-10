@@ -56,6 +56,8 @@ def run():
                 low = msg.lower()
                 if "operationalerror" in low or "could not connect to server" in low or "connection refused" in low:
                     hint = "Database unreachable — verify DATABASE_URL and DB host"
+                elif "unauthorized" in low or "401" in low or "403" in low or "forbidden" in low:
+                    hint = "GitHub authentication failed — verify GITHUB_TOKEN/GITHUB_PAT/GH_TOKEN and restart the backend."
                 elif "rate limit" in low or "rate limited" in low or "github api rate limit" in low:
                     hint = "GitHub rate limited — set GITHUB_TOKEN"
 

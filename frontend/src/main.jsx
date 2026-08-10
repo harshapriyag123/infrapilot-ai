@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 
-const API = (
-  import.meta.env.VITE_API_BASE_URL ||
-  "https://api-23d-8000.ny1.zerops.app"
+const defaultApiBase = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? "" : "https://api-23d-8000.ny1.zerops.app");
 
-).replace(/\/$/, "");
+const API = defaultApiBase.replace(/\/$/, "");
 
 async function request(path, options = {}) {
   const res = await fetch(`${API}${path}`, {

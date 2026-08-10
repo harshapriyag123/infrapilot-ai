@@ -246,12 +246,13 @@ python -m venv .venv
 
 pip install -r backend/requirements.txt
 
-set DATABASE_URL=sqlite:///./infrapilot.db
-set GITHUB_TOKEN=
-set OPENAI_API_KEY=
-set OPENAI_MODEL=
+$env:DATABASE_URL="sqlite:///./infrapilot.db"
+$env:GITHUB_TOKEN="github_pat_..."
+# Alternative env names: GITHUB_PAT or GH_TOKEN
+$env:OPENAI_API_KEY=""
+$env:OPENAI_MODEL=""
 
-uvicorn backend.app.main:app --reload --port 8000
+uvicorn backend.app.main:app --host 0.0.0.0 --reload --port 8000
 ```
 
 ### Worker
@@ -270,6 +271,12 @@ npm run dev
 ```
 
 Open http://localhost:5173.
+
+> To access the local dev frontend from another machine on your network, use `http://<your-host-ip>:5173` after starting Vite with host `0.0.0.0`.
+>
+> If you are developing locally against a deployed Zerops backend, use the local Vite proxy and/or configure the deployed API to allow `http://localhost:5173` as a CORS origin. This avoids browser preflight failures when the frontend is served from a different origin than `https://api-23d-8000.ny1.zerops.app`.
+>
+> Make sure the backend runtime can read your GitHub token from `GITHUB_TOKEN`, `GITHUB_PAT`, or `GH_TOKEN`, and restart the backend after updating the env var.
 
 ## Deploying InfraPilot on Zerops
 

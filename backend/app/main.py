@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Depends, HTTPException, Request
@@ -56,13 +57,14 @@ app = FastAPI(
 )
 
 settings = get_settings()
-# Configure CORS: prefer configured origins, otherwise allow common local dev origin.
-allow_origins = settings.cors_origin_list if settings.cors_origin_list else ["http://localhost:5173"]
+# Configure CORS: prefer configured origins, otherwise allow all origins for local/dev access.
+allow_origins = settings.cors_origin_list if settings.cors_origin_list else ["*"]
+allow_credentials = bool(settings.cors_origin_list)
 print("CORS allow_origins:", allow_origins)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allow_origins,
-    allow_credentials=True,
+    allow_credentials=allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -72,12 +74,22 @@ app.add_middleware(
 async def cors_fallback(request: Request, call_next):
     response = await call_next(request)
     origin = request.headers.get("origin")
-    if origin and origin in allow_origins:
-        response.headers["Access-Control-Allow-Origin"] = origin
-        response.headers["Access-Control-Allow-Credentials"] = "true"
-        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    if origin and (allow_origins == ["*"] or origin in allow_origins):
+        response.headers["Access-Control-Allow-Origin"] = "*" if allow_origins == ["*"] else origin
+        if allow_credentials:
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = request.headers.get(
+            "access-control-request-method", "GET, POST, OPTIONS"
+        )
+        response.headers["Access-Control-Allow-Headers"] = request.headers.get(
+            "access-control-request-headers", "Content-Type, Authorization"
+        )
     return response
+
+
+@app.options("/{path:path}")
+def options(path: str):
+    return Response(status_code=204)
 
 
 @app.get("/")
@@ -90,9 +102,25 @@ def root():
     }
 
 
+@app.get("/favicon.ico")
+def favicon():
+    return Response(status_code=204)
+
+
 @app.get("/health")
 def health():
     return {"status": "ok", "service": "infrapilot-api"}
+
+
+@app.get("/api/debug/github-token")
+def debug_github_token():
+    settings = get_settings()
+    token_value = settings.github_token_value
+    return {
+        "github_token_set": bool(token_value),
+        "token_source": "GITHUB_TOKEN / GITHUB_PAT / GH_TOKEN",
+        "has_value": bool(token_value),
+    }
 
 
 @app.options("/api/jobs")

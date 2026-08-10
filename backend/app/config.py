@@ -1,14 +1,42 @@
+import os
 from functools import lru_cache
+from pathlib import Path
 
+from dotenv import load_dotenv
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env", override=False)
 
 
 class Settings(BaseSettings):
     database_url: str | None = None
-    github_token: str | None = None
+    github_token: str | None = Field(None, env=["GITHUB_TOKEN", "GITHUB_PAT", "GH_TOKEN"])
     openai_api_key: str | None = None
     openai_model: str | None = None
     cors_origins: str | None = None
+
+    @property
+    def github_token_value(self) -> str | None:
+        raw = self.github_token
+        if raw:
+            raw = raw.strip()
+            if raw.startswith('"') and raw.endswith('"'):
+                raw = raw[1:-1].strip()
+            if raw:
+                return raw
+
+        for name in ("GITHUB_TOKEN", "GITHUB_PAT", "GH_TOKEN"):
+            env_value = os.environ.get(name)
+            if env_value:
+                env_value = env_value.strip()
+                if env_value.startswith('"') and env_value.endswith('"'):
+                    env_value = env_value[1:-1].strip()
+                if env_value:
+                    return env_value
+
+        return None
 
     worker_poll_seconds: float | None = None
 
