@@ -6,7 +6,7 @@
 
 InfraPilot AI analyzes unfamiliar GitHub repositories, reconstructs application architecture, infers required infrastructure, generates an explainable Zerops deployment plan, diagnoses deployment failures, and produces verification evidence before declaring deployment production-ready.
 
-[Live Demo]((https://frontend-23d.ny1.zerops.app/)) · [Demo Video](INSERT_VIDEO_URL) · [GitHub](INSERT_GITHUB_URL) · [Architecture](#architecture)
+[Live Demo](https://frontend-23d.ny1.zerops.app/) · [Demo Video](INSERT_VIDEO_URL) · [GitHub](INSERT_GITHUB_URL) · [Architecture](#architecture)
 [Live Demo]() · [Demo Video](INSERT_VIDEO_URL) · [GitHub](INSERT_GITHUB_URL) · [Architecture](#architecture)
 
 > IMPORTANT: `zerops.yaml` must remain at the repository root for Zerops GitHub integration.
