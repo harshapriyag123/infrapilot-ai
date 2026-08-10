@@ -854,6 +854,13 @@ function App() {
                 commands, ports, and environment
                 mappings before deployment.
               </p>
+
+              <p className="micro">
+                This starter YAML includes secret
+                mappings such as `GITHUB_TOKEN`.
+                Set the value in Zerops as a protected
+                environment secret, not in source code.
+              </p>
             </section>
 
             <section className="panel">

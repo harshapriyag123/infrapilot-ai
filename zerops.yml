@@ -32,13 +32,12 @@ zerops:
         - port: 8000
           httpSupport: true
 
+      # Secrets like GITHUB_TOKEN and OPENAI_API_KEY should be configured
+      # in the Zerops UI under the service's Environment variables -> Secret variables.
+      # Do not re-declare them here as normal runtime envVariables.
       envVariables:
         PYTHONPATH: /var/www/backend/vendor:/var/www
         DATABASE_URL: ${db_connectionString}
-        GITHUB_TOKEN: ${GITHUB_TOKEN}
-        OPENAI_API_KEY: ${OPENAI_API_KEY}
-        OPENAI_MODEL: ${OPENAI_MODEL}
-        CORS_ORIGINS: ${CORS_ORIGINS}
 
       start: sh -c 'cd /var/www/backend && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000'
 
@@ -62,12 +61,12 @@ zerops:
     run:
       base: python@3.12
 
+      # Secrets like GITHUB_TOKEN and OPENAI_API_KEY should be configured
+      # in the Zerops UI under the service's Environment variables -> Secret variables.
+      # Do not re-declare them here as normal runtime envVariables.
       envVariables:
         PYTHONPATH: /var/www/backend/vendor:/var/www
         DATABASE_URL: ${db_connectionString}
-        GITHUB_TOKEN: ${GITHUB_TOKEN}
-        OPENAI_API_KEY: ${OPENAI_API_KEY}
-        OPENAI_MODEL: ${OPENAI_MODEL}
         WORKER_POLL_SECONDS: "2"
 
       start: sh -c 'cd /var/www/backend && python worker.py'

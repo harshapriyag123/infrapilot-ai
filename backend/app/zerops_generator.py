@@ -5,6 +5,14 @@ def _signal_names(analysis: dict) -> set[str]:
     return {s["name"] for s in analysis["signals"]}
 
 
+def _common_backend_env() -> dict[str, str]:
+    return {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "OPENAI_MODEL": "${OPENAI_MODEL}",
+    }
+
+
 def generate_zerops_yaml(analysis: dict) -> str:
     """Generate a conservative starter config for common detected stacks."""
     names = _signal_names(analysis)
@@ -46,6 +54,8 @@ def generate_zerops_yaml(analysis: dict) -> str:
                 })
         elif stype == "api":
             if runtime == "Python":
+                env_vars = {"PYTHONPATH": "/var/www/vendor"}
+                env_vars.update(_common_backend_env())
                 services.append({
                     "setup": "api",
                     "build": {
@@ -56,7 +66,7 @@ def generate_zerops_yaml(analysis: dict) -> str:
                     "run": {
                         "base": "python@3.12",
                         "ports": [{"port": 8000, "httpSupport": True}],
-                        "envVariables": {"PYTHONPATH": "/var/www/vendor"},
+                        "envVariables": env_vars,
                         "start": "uvicorn main:app --host 0.0.0.0 --port 8000",
                     },
                 })
@@ -82,6 +92,8 @@ def generate_zerops_yaml(analysis: dict) -> str:
                 })
         elif stype == "worker":
             if runtime == "Python":
+                env_vars = {"PYTHONPATH": "/var/www/vendor"}
+                env_vars.update(_common_backend_env())
                 services.append({
                     "setup": "worker",
                     "build": {
@@ -91,7 +103,7 @@ def generate_zerops_yaml(analysis: dict) -> str:
                     },
                     "run": {
                         "base": "python@3.12",
-                        "envVariables": {"PYTHONPATH": "/var/www/vendor"},
+                        "envVariables": env_vars,
                         "start": svc.get("start_command") or "python worker.py",
                     },
                 })
