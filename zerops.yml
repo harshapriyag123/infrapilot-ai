@@ -23,7 +23,7 @@ zerops:
           port: 8000
           path: /health
         failureTimeout: 60s
-        retryPeriod: 5s
+        retryPeriod: 10s
 
     run:
       base: python@3.12
