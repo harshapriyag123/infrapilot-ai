@@ -6,16 +6,8 @@ zerops:
         - cd frontend && npm ci && npm run build
       deployFiles:
         - frontend/dist/~
-      # IMPORTANT:
-      # Set VITE_API_BASE_URL in the frontend build environment to the PUBLIC API URL
-      # before deploying, e.g. https://api-....zerops.app
-      envVariables:
-        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
     run:
       base: static
-      ports:
-        - port: 80
-          httpSupport: true
 
   - setup: api
     build:
@@ -23,20 +15,36 @@ zerops:
       buildCommands:
         - pip install --target backend/vendor -r backend/requirements.txt
       deployFiles:
-        - backend/~
+        - backend
+
+    deploy:
+      readinessCheck:
+        httpGet:
+          port: 8000
+          path: /health
+        failureTimeout: 60
+        retryPeriod: 5
+
     run:
       base: python@3.12
       ports:
         - port: 8000
           httpSupport: true
+
       envVariables:
-        PYTHONPATH: /var/www/vendor:/var/www
-        CORS_ORIGINS: ${CORS_ORIGINS}
+        PYTHONPATH: /var/www/backend/vendor:/var/www
         DATABASE_URL: ${db_connectionString}
         GITHUB_TOKEN: ${GITHUB_TOKEN}
         OPENAI_API_KEY: ${OPENAI_API_KEY}
         OPENAI_MODEL: ${OPENAI_MODEL}
+        CORS_ORIGINS: ${CORS_ORIGINS}
+
       start: cd backend && uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+      healthCheck:
+        httpGet:
+          port: 8000
+          path: /health
 
   - setup: worker
     build:
@@ -44,14 +52,17 @@ zerops:
       buildCommands:
         - pip install --target backend/vendor -r backend/requirements.txt
       deployFiles:
-        - backend/~
+        - backend
+
     run:
       base: python@3.12
+
       envVariables:
-        PYTHONPATH: /var/www/vendor:/var/www
+        PYTHONPATH: /var/www/backend/vendor:/var/www
         DATABASE_URL: ${db_connectionString}
         GITHUB_TOKEN: ${GITHUB_TOKEN}
         OPENAI_API_KEY: ${OPENAI_API_KEY}
         OPENAI_MODEL: ${OPENAI_MODEL}
         WORKER_POLL_SECONDS: "2"
+
       start: cd backend && python worker.py
