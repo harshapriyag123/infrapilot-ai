@@ -6,8 +6,8 @@
 
 InfraPilot AI analyzes unfamiliar GitHub repositories, reconstructs application architecture, infers required infrastructure, generates an explainable Zerops deployment plan, diagnoses deployment failures, and produces verification evidence before declaring deployment production-ready.
 
-[Live Demo](https://frontend-23d.ny1.zerops.app/) · [Demo Video](INSERT_VIDEO_URL) · [GitHub](INSERT_GITHUB_URL) · [Architecture](#architecture)
-[Live Demo]() · [Demo Video](INSERT_VIDEO_URL) · [GitHub](INSERT_GITHUB_URL) · [Architecture](#architecture)
+[Live Demo](https://frontend-23d.ny1.zerops.app/) · [Medium Post](https://medium.com/@harshapriyag22/zerops-6dd0cb619f0a) · [GitHub](https://github.com/harshapriyag123/infrapilot-ai) · [Architecture](#architecture)
+[Live Demo](https://frontend-23d.ny1.zerops.app/) · [Medium Post](https://medium.com/@harshapriyag22/zerops-6dd0cb619f0a) · [GitHub](https://github.com/harshapriyag123/infrapilot-ai) · [Architecture](#architecture)
 
 > IMPORTANT: `zerops.yaml` must remain at the repository root for Zerops GitHub integration.
 
@@ -219,19 +219,19 @@ VERIFY
 
 Live application:
 
-[INSERT LIVE ZEROPS URL]
+[https://frontend-23d.ny1.zerops.app]
 
 Demo repository:
 
-[INSERT DEMO REPOSITORY]
+[https://github.com/harshapriyag123/infrapilot-ai]
 
-Demo video:
+Medium Article:
 
-[INSERT VIDEO URL]
+[https://medium.com/@harshapriyag22/zerops-6dd0cb619f0a]
 
 API docs:
 
-[INSERT /docs URL]
+[https://api-23d-8000.ny1.zerops.app/docs]
 
 ## Local setup
 
