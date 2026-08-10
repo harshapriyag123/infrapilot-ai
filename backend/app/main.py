@@ -16,7 +16,7 @@ from .github_client import GitHubClient
 from .analyzer import detect
 from .zerops_generator import generate_zerops_yaml
 from .schemas import QuickAnalysisIn, QuickAnalysisOut
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, Response
 import queue
 import threading
 import json
@@ -81,6 +81,11 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "ok", "service": "infrapilot-api"}
+
+
+@app.options("/api/jobs")
+def jobs_options():
+    return Response(status_code=204)
 
 
 def job_out(job: AnalysisJob) -> JobOut:
