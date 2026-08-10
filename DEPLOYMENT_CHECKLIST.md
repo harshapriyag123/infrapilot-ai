@@ -22,17 +22,17 @@ Set on `api` and `worker`:
 
 ## CORS
 On `api`, set:
-- `CORS_ORIGINS=https://<your-frontend-public-url>`
+- `CORS_ORIGINS=https://frontend-23d.ny1.zerops.app`
 
 ## Frontend build variable
 On `frontend`, set:
-- `VITE_API_BASE_URL=https://<your-api-public-url>`
+- `VITE_API_BASE_URL=https://api-23d-8000.ny1.zerops.app`
 
 Because Vite injects `VITE_*` values during build, redeploy the frontend after setting/changing it.
 
 ## Verify
-- Open `https://<api>/health` → should return status ok.
-- Open `https://<api>/docs` → Swagger UI.
+- Open `https://api-23d-8000.ny1.zerops.app/health` → should return status ok.
+- Open `https://api-23d-8000.ny1.zerops.app/docs` → Swagger UI.
 - Open frontend.
 - Analyze a public GitHub repository.
 - Confirm the worker changes job status queued → running → completed.
