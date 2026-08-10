@@ -22,8 +22,8 @@ zerops:
         httpGet:
           port: 8000
           path: /health
-        failureTimeout: 60
-        retryPeriod: 5
+        failureTimeout: 60s
+        retryPeriod: 5s
 
     run:
       base: python@3.12
@@ -45,6 +45,10 @@ zerops:
         httpGet:
           port: 8000
           path: /health
+        failureTimeout: 60s
+        disconnectTimeout: 30s
+        recoveryTimeout: 30s
+        execPeriod: 10s
 
   - setup: worker
     build:
